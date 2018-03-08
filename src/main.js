@@ -9,13 +9,14 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import store from './store'
 import VueResource from 'vue-resource'
-import VueFormGenerator from 'vue-form-generator'
+import { sync } from 'vuex-router-sync'
+sync(store, router)
+
 Vue.config.productionTip = false
 
 Vue.use(VueMaterial)
 Vue.use(Vuex)
 Vue.use(VueResource)
-Vue.use(VueFormGenerator)
 
 /* eslint-disable no-new */
 new Vue({

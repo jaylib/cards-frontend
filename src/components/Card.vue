@@ -1,30 +1,48 @@
 <template>
   <div>
     <div class="card">
-      <div v-bind:key="card.title" v-for="card in cards">
         <h1>{{ card.title }}</h1>
         <p>
           {{ card.greetingText }}
         </p>
         <span class="author">{{ card.author }}</span>
-      </div>
+        <span class="author">{{ formatDate(card.created) }}</span>
+    </div>
+    <div class="commentForm">
+      <md-field>
+        <label>Name</label>
+        <md-input v-model="comment.author"></md-input>
+      </md-field>
+      <md-field>
+        <label>Dein Kommentar...</label>
+        <md-textarea v-model="comment.text"></md-textarea>
+      </md-field>
+      <md-button class="md-raised md-primary" v-on:click="sendComment">Kommentieren</md-button>
+
     </div>
     <div class="comments">
-      <h2>{{cards.length}} Kommentare</h2>
-      <input type="text" v-model="msg">
-      <md-button class="md-raised md-primary" v-on:click="onClick">Kommentieren</md-button>
-
+      <div v-bind:id="comment.id" class="comment" v-bind:key="comment.id" v-for="comment in comments">
+        <p>
+          {{ comment.text }}
+        </p>
+        <span class="author">{{ comment.author }}</span>
+        <span class="author">{{ formatDate(comment.created) }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
-import 'vue-form-generator/dist/vfg.css'
+import moment from 'moment'
+moment.locale('de')
 
 export default {
   data: () => ({
-    msg: 'hhh',
+    comment: {
+      author: '',
+      text: ''
+    },
     test: 'hello',
     model: {
       id: 1,
@@ -60,23 +78,45 @@ export default {
     }
   }),
   created () {
-    this.fetchCards()
+    this.fetchCard()
   },
   computed: {
     ...mapGetters({
-      cards: 'cards'
+      card: 'card',
+      comments: 'comments'
     }),
     ...mapActions({
       saveCard: 'saveCard'
     })
   },
   methods: {
-    onClick () {
-      console.log(this.msg)
+    sortedComments (comments) {
+      function compare (a, b) {
+        if (a.name < b.name) return -1
+        if (a.name > b.name) return 1
+        return 0
+      }
+      return comments.sort(compare)
     },
-    fetchCards () {
-      this.$http.get(`http://localhost:8089/cards/${this.$route.params.id}`).then(response => {
-        this.$store.dispatch('saveCard', response.body)
+    formatDate (date) {
+      return moment(date).format('LLL')
+    },
+    sendComment () {
+      this.$http.post(`http://localhost:8089/cards/${this.$route.params.cardId}/comments`, this.comment).then(commentsResponse => {
+        this.fetchCard()
+      }, response => {
+
+      })
+    },
+    fetchCard () {
+      this.$http.get(`http://localhost:8089/cards/${this.$route.params.cardId}`).then(cardResponse => {
+        this.$http.get(`http://localhost:8089/cards/${this.$route.params.cardId}/comments`).then(commentsResponse => {
+          let card = cardResponse.body
+          card['comments'] = commentsResponse.body
+          this.$store.dispatch('saveCard', card)
+        }, response => {
+
+        })
       }, response => {
 
       })
@@ -92,17 +132,17 @@ export default {
     padding: 50px;
   }
 
-  h1 {
+  .card h1 {
     font-size: 48px;
     color: white;
   }
 
-  p {
+  .card p {
     color: white;
     font-size: 24px;
   }
 
-  .author {
+  .card .author {
     display: block;
     text-align: right;
     font-size: 14px;
@@ -110,11 +150,25 @@ export default {
     font-weight: bold;
   }
 
-  .comments {
+  .commentForm {
     padding: 50px;
-    background: #fff;
+    background: #ffcdd2;
   }
 
+  .comment {
+    background: #fff;
+    color: #424242;
+    padding: 48px;
+    font-size: 24px;
+  }
+
+  .comment .author {
+    display: block;
+    text-align: right;
+    font-size: 14px;
+    color: #424242;
+    font-weight: bold;
+  }
   .md-field {
     margin-bottom: 0px !important;
   }
