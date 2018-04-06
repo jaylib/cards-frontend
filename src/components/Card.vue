@@ -43,39 +43,7 @@ export default {
       author: '',
       text: ''
     },
-    test: 'hello',
-    model: {
-      id: 1,
-      name: 'John Doe',
-      comment: 'J0hnD03!x4',
-      skills: ['Javascript', 'VueJS'],
-      email: 'john.doe@gmail.com',
-      status: true
-    },
-    schema: {
-      fields: [{
-        type: 'input',
-        inputType: 'text',
-        label: 'Name',
-        model: 'name',
-        placeholder: 'Your name',
-        featured: true,
-        required: true
-      }, {
-        type: 'textArea',
-        inputType: 'textArea',
-        label: 'comment',
-        model: 'comment',
-        placeholder: 'Your name',
-        featured: true,
-        required: true
-      }, {
-        type: 'submit',
-        label: '',
-        buttonText: 'Submit',
-        validateBeforeSubmit: true
-      }]
-    }
+    test: 'hello'
   }),
   created () {
     this.fetchCard()

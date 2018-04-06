@@ -40,11 +40,13 @@ const mutations = {
       if (a.created > b.created) return -1
       return 0
     }
-    const cards = state.cards
-    state.cards.splice(0, state.cards.length)
-    state.cards.push(...cards.sort(compare))
-    card.comments.sort(compare)
+    // const cards = state.cards
+    // state.cards.splice(0, state.cards.length)
+    // state.cards.push(...cards.sort(compare))
+    // card.comments.sort(compare)
+    state.cards = state.cards.filter(i => i.id !== card.id)
     state.cards.push(card)
+    card.comments.sort(compare)
   },
   addCards: (state, cards) => {
     state.fetched = true

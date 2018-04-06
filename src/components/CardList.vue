@@ -7,6 +7,7 @@
           {{ card.greetingText }}
         </p>
         <span class="author">{{ card.author }}</span>
+        <span class="author">{{ formatDate(card.created) }}</span>
       </div>
     </div>
   </div>
@@ -14,11 +15,13 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
-
+import moment from 'moment'
 export default {
   data: () => ({}),
   created () {
+    // setInterval(() => {
     this.fetchCards()
+    // }, 2000)
   },
   computed: mapGetters({
     cards: 'cards',
@@ -28,6 +31,9 @@ export default {
     ...mapActions({
       saveCards: 'saveCards'
     }),
+    formatDate (date) {
+      return moment(date).format('LLL')
+    },
     onClick (event) {
       const argument = event.currentTarget.id
       this.$router.push({name: 'card', params: {cardId: argument}})
@@ -48,6 +54,29 @@ export default {
 <style scoped>
   h1 {
     padding: 0px;
+  }
+  .card {
+    background: #f34d52;
+    width: 100%;
+    padding: 50px;
+  }
+
+  .card h1 {
+    font-size: 48px;
+    color: white;
+  }
+
+  .card p {
+    color: white;
+    font-size: 24px;
+  }
+
+  .card .author {
+    display: block;
+    text-align: right;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
   }
   .card:nth-child(even) {
     background-color: #ffcdd2;
