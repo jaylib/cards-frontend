@@ -77,17 +77,7 @@ export default {
       })
     },
     fetchCard () {
-      this.$http.get(`http://localhost:8089/cards/${this.$route.params.cardId}`).then(cardResponse => {
-        this.$http.get(`http://localhost:8089/cards/${this.$route.params.cardId}/comments`).then(commentsResponse => {
-          let card = cardResponse.body
-          card['comments'] = commentsResponse.body
-          this.$store.dispatch('saveCard', card)
-        }, response => {
-
-        })
-      }, response => {
-
-      })
+      this.$store.dispatch('getCard',this.$route.params.cardId)
     }
   }
 }
@@ -95,7 +85,7 @@ export default {
 
 <style scoped>
   .card {
-    background: #f34d52;
+    background: #78909C;
     width: 100%;
     padding: 50px;
   }
@@ -120,7 +110,7 @@ export default {
 
   .commentForm {
     padding: 50px;
-    background: #ffcdd2;
+    background: #CFD8DC;
   }
 
   .comment {
@@ -141,16 +131,24 @@ export default {
     margin-bottom: 0px !important;
   }
 
+  .md-field input[type="text"], .md-field label {
+    padding-left: 10px!important;
+  }
+
   .md-field + .md-has-textarea:not(.md-autogrow) {
     margin-top: 0px !important;
   }
 
   .md-field.md-has-textarea:not(.md-autogrow) .md-textarea {
-    padding-left: 0px !important;
+    padding-left: 10px !important;
   }
 
   .md-field.md-has-textarea:not(.md-autogrow) label {
     left: 0px !important;
+  }
+
+  button {
+    background: #fff;
   }
 
   pre {
@@ -216,5 +214,10 @@ export default {
 
   .field-checklist .wrapper {
     width: 100%;
+  }
+
+  .md-field {
+    background: #ECEFF1;
+    margin-bottom: 20px!important;
   }
 </style>

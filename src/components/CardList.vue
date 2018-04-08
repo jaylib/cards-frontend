@@ -79,15 +79,25 @@ export default {
     font-weight: bold;
   }
   .card:nth-child(even) {
-    background-color: #ffcdd2;
+    background-color: #CFD8DC;
+
   }
+
+  .card:nth-child(even) h1, .card:nth-child(even) p, .card:nth-child(even) .author {
+    color: #78909C;
+  }
+
   .card:nth-child(odd) {
-    background-color: #ef9a9a;
+    background-color: #78909C;
   }
   .card {
     padding: 10px;
   }
   .card:hover {
     cursor: pointer;
+  }
+  .cards {
+    display: grid; /* display: inline-grid;*/
+    grid-template-columns: 1fr 1fr 1fr; /* 3 x 1 fraction */
   }
 </style>

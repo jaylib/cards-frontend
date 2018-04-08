@@ -10,6 +10,8 @@ import 'vue-material/dist/vue-material.min.css'
 import store from './store'
 import VueResource from 'vue-resource'
 import { sync } from 'vuex-router-sync'
+// import * as EventSource from 'eventsource'
+
 // import VueNativeSock from 'vue-native-websocket'
 
 sync(store, router)
@@ -22,21 +24,34 @@ Vue.use(VueMaterial)
 Vue.use(Vuex)
 Vue.use(VueResource)
 
-// var webSocket = new WebSocket('ws://' + location.hostname + ':7980' + '/chat')
-// webSocket.onopen = function () {
-//   console.log('opened')
-// }
-
-var webSocket = new window.SockJS('http://localhost:8089/chat')
+var webSocket = new window.SockJS('http://localhost:8089/messages')
 webSocket.onopen = function () {
 
 }
 
 webSocket.onmessage = function (card) {
-  let commentedCard = JSON.parse(card.data)
-  commentedCard.comments = []
-  store.commit('addCard', commentedCard)
+  let data = JSON.parse(card.data)
+  switch (data.type) {
+    case 'card':
+      let card = data.data
+      card.comments = []
+      store.dispatch('saveCard', card)
+      break
+    case 'comment':
+      store.dispatch('getCard', data.data.cardId)
+      break
+  }
 }
+
+// let url = 'http://localhost:8089/cards'
+// let eventSource = new EventSource(url)
+// eventSource.onmessage = (event) => {
+//  console.debug('Received event: ', event)
+//  let commentedCard = JSON.parse(event.data)
+//  commentedCard.comments = []
+//  store.commit('addCard', commentedCard)
+//  console.log(commentedCard)
+// }
 
 /* eslint-disable no-new */
 new Vue({
